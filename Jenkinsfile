@@ -25,6 +25,18 @@ pipeline {
                 sh "./gradlew test"
             }
         }
+        stage('SonarQube analysis') {
+            steps {
+                 withSonarQubeEnv('sonarqube') {
+                    sh "./gradlew sonarqube"
+                  }
+                 }
+        }
+        stage("Quality gate") {
+              steps {
+                  waitForQualityGate abortPipeline: true
+                   }
+        }
          stage("package") {
             steps {
                 sh "./gradlew build"
